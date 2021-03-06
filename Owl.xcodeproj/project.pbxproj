@@ -97,6 +97,7 @@
 		6478952E227F5099005F983F /* Extras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6478952C227F5091005F983F /* Extras.swift */; };
 		647DD9862296DF9600288935 /* CatalogItemCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 647DD9852296DF9600288935 /* CatalogItemCell.xib */; };
 		8933C7901EB5B82D000D00A4 /* OwlTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8933C7891EB5B82A000D00A4 /* OwlTests.swift */; };
+		8A08BF4E25F3C72800E05FA9 /* SafeIndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A08BF4D25F3C72800E05FA9 /* SafeIndexPath.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +175,7 @@
 		6478952C227F5091005F983F /* Extras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extras.swift; sourceTree = "<group>"; };
 		647DD9852296DF9600288935 /* CatalogItemCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CatalogItemCell.xib; sourceTree = "<group>"; };
 		8933C7891EB5B82A000D00A4 /* OwlTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OwlTests.swift; sourceTree = "<group>"; };
+		8A08BF4D25F3C72800E05FA9 /* SafeIndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeIndexPath.swift; sourceTree = "<group>"; };
 		AD2FAA261CD0B6D800659CF4 /* Owl.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Owl.plist; sourceTree = "<group>"; };
 		AD2FAA281CD0B6E100659CF4 /* OwlTests.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = OwlTests.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -344,6 +346,7 @@
 			children = (
 				641CD9E522789E9E00C88886 /* Protocols */,
 				641CD9DE22789E9100C88886 /* DifferenceKit */,
+				8A08BF4D25F3C72800E05FA9 /* SafeIndexPath.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -663,6 +666,7 @@
 				641CD9BE22789E5100C88886 /* CollectionDirector.swift in Sources */,
 				641CD9B722789E4100C88886 /* TableCellAdapter.swift in Sources */,
 				641CD9B322789E3700C88886 /* TableHeaderFooterAdapter.swift in Sources */,
+				8A08BF4E25F3C72800E05FA9 /* SafeIndexPath.swift in Sources */,
 				641CD9E322789E9C00C88886 /* ScrollViewEventsHandler.swift in Sources */,
 				641CD9A622789E1700C88886 /* TableDirector.swift in Sources */,
 				641CD9BD22789E5100C88886 /* CollectionSection.swift in Sources */,
