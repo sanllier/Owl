@@ -153,15 +153,15 @@ open class CollectionDirector: NSObject,
     ///   - indexPath: index path.
     /// - Returns: adapter if any
     internal func adapterForHeaderFooter(_ kind: String, indexPath: IndexPath) -> CollectionHeaderFooterAdapterProtocol? {
-        guard indexPath.section >= 0, indexPath.section < sections.count else {
+        guard indexPath.safe.section >= 0, indexPath.safe.section < sections.count else {
             return nil
         }
         let adapter: CollectionHeaderFooterAdapterProtocol?
         switch kind {
         case UICollectionView.elementKindSectionHeader:
-            adapter = sections[indexPath.section].headerView
+            adapter = sections[indexPath.safe.section].headerView
         case UICollectionView.elementKindSectionFooter:
-            adapter = sections[indexPath.section].footerView
+            adapter = sections[indexPath.safe.section].footerView
         default:
             return nil
         }
@@ -177,12 +177,12 @@ open class CollectionDirector: NSObject,
 	///   - safe: `true` to return nil if path is invalid, `false` to perform an unchecked retrive.
 	/// - Returns: model
 	public func elementAt(_ indexPath: IndexPath) -> ElementRepresentable? {
-		guard indexPath.section >= 0, indexPath.row >= 0,
-			indexPath.section < self.sections.count,
-			indexPath.row < sections[indexPath.section].elements.count else {
+		guard indexPath.safe.section >= 0, indexPath.safe.row >= 0,
+			indexPath.safe.section < self.sections.count,
+			indexPath.safe.row < sections[indexPath.safe.section].elements.count else {
 			return nil
 		}
-		return sections[indexPath.section].elements[indexPath.row]
+		return sections[indexPath.safe.section].elements[indexPath.safe.row]
 	}
 
 	/// Change the content of the table.
@@ -261,7 +261,7 @@ open class CollectionDirector: NSObject,
     /// Remove item at specified index path.
     @discardableResult
     public func remove(indexPath: IndexPath) -> ElementRepresentable? {
-        return sectionAt(indexPath.section)?.remove(at: indexPath.row)
+        return sectionAt(indexPath.safe.section)?.remove(at: indexPath.safe.row)
     }
 
 	/// Remove section at index from the collection.
@@ -343,9 +343,9 @@ open class CollectionDirector: NSObject,
 	// MARK: - Private Methods -
 
 	internal func context(forItemAt indexPath: IndexPath) -> (ElementRepresentable, CollectionCellAdapterProtocol) {
-		let modelInstance = sections[indexPath.section].elements[indexPath.row]
+		let modelInstance = sections[indexPath.safe.section].elements[indexPath.safe.row]
 		guard let adapter = cellAdapters[modelInstance.modelClassIdentifier] else {
-			fatalError("No register adapter for model '\(modelInstance.modelClassIdentifier)' at (\(indexPath.section),\(indexPath.row))")
+			fatalError("No register adapter for model '\(modelInstance.modelClassIdentifier)' at (\(indexPath.safe.section),\(indexPath.safe.row))")
 		}
 		return (modelInstance, adapter)
 	}
@@ -521,30 +521,30 @@ public extension CollectionDirector {
 	func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let adapter = adapterForHeaderFooter(kind, indexPath: indexPath)
         let view = adapter?.dequeueHeaderFooterForDirector(self, type: kind, indexPath: indexPath) ?? UICollectionReusableView()
-        let _ = adapter?.dispatch(.dequeue, isHeader: (kind == UICollectionView.elementKindSectionHeader), view: view, section: sections[indexPath.section], index: indexPath.section)
+        let _ = adapter?.dispatch(.dequeue, isHeader: (kind == UICollectionView.elementKindSectionHeader), view: view, section: sections[indexPath.safe.section], index: indexPath.safe.section)
         return view
     }
 
 	func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
         let adapter = adapterForHeaderFooter(elementKind, indexPath: indexPath)
-		let _ = adapter?.dispatch(.willDisplay, isHeader: true, view: view, section: sections[indexPath.section], index: indexPath.section)
+		let _ = adapter?.dispatch(.willDisplay, isHeader: true, view: view, section: sections[indexPath.safe.section], index: indexPath.safe.section)
 		view.layer.zPosition = 0
 	}
 
 	func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
         let adapter = adapterForHeaderFooter(elementKind, indexPath: indexPath)
-        let _ = adapter?.dispatch(.endDisplay, isHeader: true, view: view, section: sections[indexPath.section], index: indexPath.section)
+        let _ = adapter?.dispatch(.endDisplay, isHeader: true, view: view, section: sections[indexPath.safe.section], index: indexPath.safe.section)
 	}
 
 	func headerFooterForSection(ofType type: String, at indexPath: IndexPath) -> CollectionHeaderFooterAdapterProtocol? {
-        guard indexPath.section >= 0, indexPath.section < sections.count else {
+        guard indexPath.safe.section >= 0, indexPath.safe.section < sections.count else {
             return nil
         }
 		switch type {
 		case UICollectionView.elementKindSectionHeader:
-			return sections[indexPath.section].headerView
+			return sections[indexPath.safe.section].headerView
 		case UICollectionView.elementKindSectionFooter:
-			return sections[indexPath.section].footerView
+			return sections[indexPath.safe.section].footerView
 		default:
 			return nil
 		}
@@ -568,12 +568,12 @@ public extension CollectionDirector {
 
 	internal func adaptersForIndexPaths(_ paths: [IndexPath]) -> [PrefetchModelsGroup] {
 		let result = paths.reduce(into: [String: PrefetchModelsGroup]()) { (result, indexPath) in
-			let model = sections[indexPath.section].elements[indexPath.item]
+			let model = sections[indexPath.safe.section].elements[indexPath.safe.item]
 
 			var context = result[model.modelClassIdentifier]
 			if context == nil {
 				guard let adapter = cellAdapters[model.modelClassIdentifier] else {
-					fatalError("Failed to get adapter for model: '\(model)' at (\(indexPath.section),\(indexPath.row))")
+					fatalError("Failed to get adapter for model: '\(model)' at (\(indexPath.safe.section),\(indexPath.safe.row))")
 				}
 				context = PrefetchModelsGroup(adapter: adapter)
 			}

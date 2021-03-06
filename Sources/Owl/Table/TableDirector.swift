@@ -136,12 +136,12 @@ open class TableDirector: NSObject, UITableViewDataSourcePrefetching {
 	/// - Returns: `[PrefetchModelsGroup]`
 	internal func cellAdaptersForIndexPaths(_ paths: [IndexPath]) -> [PrefetchModelsGroup] {
 		let result = paths.reduce(into: [String: PrefetchModelsGroup]()) { (result, indexPath) in
-			let model = sections[indexPath.section].elements[indexPath.item]
+			let model = sections[indexPath.safe.section].elements[indexPath.safe.item]
 
 			var context = result[model.modelClassIdentifier]
 			if context == nil {
 				guard let adapter = cellAdapters[model.modelClassIdentifier] else {
-					fatalError("Failed to get adapter for model: '\(model)' at (\(indexPath.section),\(indexPath.row))")
+					fatalError("Failed to get adapter for model: '\(model)' at (\(indexPath.safe.section),\(indexPath.safe.row))")
 				}
 				context = PrefetchModelsGroup(adapter: adapter)
 			}
@@ -257,12 +257,12 @@ open class TableDirector: NSObject, UITableViewDataSourcePrefetching {
 	///   - safe: `true` to return nil if path is invalid, `false` to perform an unchecked retrive.
 	/// - Returns: model
 	public func elementAt(_ indexPath: IndexPath) -> ElementRepresentable? {
-		guard indexPath.section >= 0, indexPath.row >= 0,
-			indexPath.section < self.sections.count,
-			indexPath.row < sections[indexPath.section].elements.count else {
+		guard indexPath.safe.section >= 0, indexPath.safe.row >= 0,
+			indexPath.safe.section < self.sections.count,
+			indexPath.safe.row < sections[indexPath.safe.section].elements.count else {
 				return nil
 		}
-		return sections[indexPath.section].elements[indexPath.row]
+		return sections[indexPath.safe.section].elements[indexPath.safe.row]
 	}
 	
 	// MARK: - Remove Sections -
@@ -270,7 +270,7 @@ open class TableDirector: NSObject, UITableViewDataSourcePrefetching {
     /// Remove item at specified index path.
     @discardableResult
     public func remove(indexPath: IndexPath) -> ElementRepresentable? {
-        return sectionAt(indexPath.section)?.remove(at: indexPath.row)
+        return sectionAt(indexPath.safe.section)?.remove(at: indexPath.safe.row)
     }
     
 	/// Remove section at specified index.
@@ -678,9 +678,9 @@ extension TableDirector: UITableViewDataSource, UITableViewDelegate {
 
 	public func tableView(_ tableView: UITableView, didEndEditingRowAt indexPath: IndexPath?) {
 		guard let indexPath = indexPath else { return }
-        if indexPath.row >= tableView.numberOfRows(inSection: indexPath.section) ||
-            indexPath.section >= sections.count ||
-            indexPath.row >= sections[indexPath.section].elements.count {
+        if indexPath.safe.row >= tableView.numberOfRows(inSection: indexPath.safe.section) ||
+            indexPath.safe.section >= sections.count ||
+            indexPath.safe.row >= sections[indexPath.safe.section].elements.count {
             return
         }
         let (model, adapter) = context(forItemAt: indexPath)
